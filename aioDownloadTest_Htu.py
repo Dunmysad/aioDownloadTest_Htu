@@ -14,6 +14,7 @@ def getImages():
     return urls
 
 async def aioDownload(url):
+    name = url.rsplit("/", 1)[1]
     async with aiohttp.ClinetSession() as session:
         async with session.get(url).content.decode() as resp:
             html = etree.HTML(resp)
