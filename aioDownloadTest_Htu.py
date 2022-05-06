@@ -44,6 +44,7 @@ if __name__ == '__main__':
         for i in range(len(get_urls)):
             t.submit(getimagesurl, get_urls[i])
     print(images_urls)
+    print(len(images_urls))
     try:
         os.mkdir('./download')
     except Exception as e:
