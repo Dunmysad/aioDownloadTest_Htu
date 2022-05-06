@@ -1,0 +1,4 @@
+aiofile==3.7.4
+aiohttp==3.8.1
+lxml==4.6.1
+requests==2.25.0
