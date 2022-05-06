@@ -1,7 +1,7 @@
 # aioDownloadTest_Htu
 
 ### 必要的库
-`pip install aiothhp requests brotlipy`
+`pip install aiothhp requests brotlipy lxml`
 
 ### 可能出现的问题
 *解码问题*
