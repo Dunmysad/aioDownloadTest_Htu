@@ -62,4 +62,4 @@ if __name__ == '__main__':
     # 异步下载图片
     asyncio.run(test())
     t2 = time.time()
-    print(f'照片全部下载完成！ 共耗时 {t2-t1} s')
+    print(f'耗时 {t2-t1} s')
