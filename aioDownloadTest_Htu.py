@@ -1,33 +1,51 @@
 #!/usr/bin/env python3
+from concurrent.futures import ThreadPoolExecutor
+import requests
 import asyncio
 import aiohttp
 from lxml import etree
+import os
 
-    
-start_url = 'https://www.htu.edu.cn/9547/list.htm'
+fr_url = 'https://www.htu.edu.cn'
+Url = 'https://www.htu.edu.cn/9547/list.htm'
+get_urls = []
+images_urls = []
 
-# 获取每一张图片的地址
-def getImages():
+def geturls(start_url):
     resp = requests.get(start_url).content.decode()
     html = etree.HTML(resp)
-    urls = ['https://www.htu.edu.cn' + item for item in html.xpath('../html/body/div[3]/div/div/div[2]/div/div/ul/li/div/@href')] 
-    return urls
+    urls = html.xpath('../html/body/div[3]/div/div/div[2]/div/div/ul/li/div/@href')
+    for url in urls:
+        get_urls.append(f'{fr_url}{url}')
+    print(get_urls)
+
+def getimagesurl(url):
+    html = etree.HTML(requests.get(url).content.decode())
+    images_url = html.xpath('../html/body/div[3]/div[1]/div/div[1]/img/@src')
+    images_urls.append(f'{fr_url}{images_url[0]}')
+    print(f'{fr_url}{images_url[0]}')
+
 
 async def aioDownload(url):
-    name = url.rsplit("/", 1)[1]
-    async with aiohttp.ClinetSession() as session:
-        async with session.get(url).content.decode() as resp:
-            html = etree.HTML(resp)
-            image = 'https://www.htu.edu.cn' + html.xpath(../html/body/div[3]/div[1]/div/div[1]/img/src)
-            with open(name, mode="wb") as f:
-                f.write(await image.content.read())
+    name = url.split("-", 1)[-1]
+    async with aiohttp.ClientSession() as session:
+        async with session.get(url) as resp:
+            with open(f'./download/{name}', mode="wb") as f:
+                f.write(await resp.content.read())
+    print(name, '下载完成')
 
-async def main():
-    tasks = getImages()
-    for url in urls:
-        tasks.append(aioDownload(url))
-    await asyncio.wait(tasts)
-
+async def test():
+    tasks = [asyncio.create_task(aioDownload(url)) for url in images_urls]
+    await asyncio.wait(tasks)
 
 if __name__ == '__main__':
-    async.run(main())
+    geturls(Url)
+    with ThreadPoolExecutor(50) as t:
+        for i in range(len(get_urls)):
+            t.submit(getimagesurl, get_urls[i])
+    print(images_urls)
+    try:
+        os.mkdir('./download')
+    except Exception as e:
+        pass
+    asyncio.run(test())
