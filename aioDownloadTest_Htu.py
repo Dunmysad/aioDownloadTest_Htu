@@ -21,15 +21,15 @@ def geturls(start_url):
 
 def getimagesurl(url):
     html = etree.HTML(requests.get(url).content.decode())
-    images_url = html.xpath('../html/body/div[3]/div[1]/div/div[1]/img/@src')
-    images_urls.append(f'{fr_url}{images_url[0]}')
-    print(f'{fr_url}{images_url[0]}')
+    images_url = html.xpath('../html/body/div[3]/div[1]/div/div[1]/img/@src')[0]
+    images_urls.append(f'{fr_url}{images_url}')
+    print(f'{fr_url}{images_url}')
 
 
 async def aioDownload(url):
     name = url.split("-", 1)[-1]
     async with aiohttp.ClientSession() as session:
-        async with session.get(url) as resp:
+        async with session.get(url, timeout=1000) as resp:
             with open(f'./download/{name}', mode="wb") as f:
                 f.write(await resp.content.read())
     print(name, '下载完成')
