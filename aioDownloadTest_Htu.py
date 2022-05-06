@@ -5,6 +5,8 @@ import asyncio
 import aiohttp
 from lxml import etree
 import os
+from aiofile import AIOFile, Writer, Reader
+import time
 
 fr_url = 'https://www.htu.edu.cn'
 Url = 'https://www.htu.edu.cn/9547/list.htm'
@@ -30,8 +32,9 @@ async def aioDownload(url):
     name = url.split("-", 1)[-1]
     async with aiohttp.ClientSession() as session:
         async with session.get(url, timeout=1000) as resp:
-            with open(f'./download/{name}', mode="wb") as f:
-                f.write(await resp.content.read())
+            async with AIOFile(f'./download/{name}', mode="wb") as f:
+                writer = Writer(f)
+                await writer(await resp.content.read())
     print(name, '下载完成')
 
 async def test():
@@ -39,6 +42,7 @@ async def test():
     await asyncio.wait(tasks)
 
 if __name__ == '__main__':
+    t1 = time.time()
     geturls(Url)
     with ThreadPoolExecutor(50) as t:
         for i in range(len(get_urls)):
@@ -50,3 +54,5 @@ if __name__ == '__main__':
     except Exception as e:
         pass
     asyncio.run(test())
+    t2 = time.time()
+    print(t2-t1)
