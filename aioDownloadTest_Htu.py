@@ -9,7 +9,7 @@ import aiofiles
 import time
 
 fr_url = 'https://www.htu.edu.cn'
-Url = 'https://www.htu.edu.cn/9547/list.htm'
+start_url = 'https://www.htu.edu.cn/_t1179/9547/list.psp'
 get_urls = []
 images_urls = []
 
@@ -17,7 +17,7 @@ images_urls = []
 def geturls(start_url):
     resp = requests.get(start_url).content.decode()
     html = etree.HTML(resp)
-    urls = html.xpath('../html/body/div[3]/div/div/div[2]/div/div/ul/li/div/@href')
+    urls = html.xpath('//*[@id="wp_news_w29"]/div/div/div/ul/li/div/@href')
     for url in urls:
         get_urls.append(f'{fr_url}{url}')
 
@@ -47,7 +47,7 @@ async def test():
 
 if __name__ == '__main__':
     t1 = time.time()
-    geturls(Url)
+    geturls(start_url)
     # 多线程获取照片下载路径
     with ThreadPoolExecutor(50) as t:
         for i in range(len(get_urls)):
