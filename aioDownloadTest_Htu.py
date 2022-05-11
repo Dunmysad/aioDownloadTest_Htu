@@ -9,7 +9,7 @@ import aiofiles
 import time
 
 fr_url = 'https://www.htu.edu.cn'
-start_url = 'https://www.htu.edu.cn/_t1179/9547/list.psp'
+start_url = 'https://www.htu.edu.cn/9547/list.htm'
 get_urls = []
 images_urls = []
 
