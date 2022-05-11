@@ -7,15 +7,18 @@ from lxml import etree
 import os
 import aiofiles
 import time
+from bs4 import BeautifulSoup
 
 fr_url = 'https://www.htu.edu.cn'
-start_url = 'https://www.htu.edu.cn/9547/list.htm'
 get_urls = []
 images_urls = []
 
 # 获取官网照片网页内所有单个照片网页的地址
-def geturls(start_url):
-    resp = requests.get(start_url).content.decode()
+def geturls():
+    # 获取初始url
+    response = requests.get(fr_url)
+    start_url = BeautifulSoup(response.content.decode(), "html.parser").find("div", attrs={"class": "db"}).find_all('a')[0]['href']
+    resp = requests.get(fr_url+start_url).content.decode()
     html = etree.HTML(resp)
     urls = html.xpath('//*[@id="wp_news_w29"]/div/div/div/ul/li/div/@href')
     for url in urls:
@@ -47,7 +50,7 @@ async def test():
 
 if __name__ == '__main__':
     t1 = time.time()
-    geturls(start_url)
+    geturls()
     # 多线程获取照片下载路径
     with ThreadPoolExecutor(50) as t:
         for i in range(len(get_urls)):
